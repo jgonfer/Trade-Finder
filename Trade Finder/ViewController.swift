@@ -9,6 +9,8 @@
 import UIKit
 
 class ViewController: UIViewController {
+    let reuseIdentifier = "Cell"
+    
     var data = NSMutableData()
     var gnomes: [Gnome]?
     
@@ -22,7 +24,7 @@ class ViewController: UIViewController {
     }
     
     private func setupController() {
-        tableView.registerClass(UITableViewCell.classForCoder(), forCellReuseIdentifier: "cell")
+        tableView.registerNib(UINib(nibName: reuseIdentifier, bundle: nil), forCellReuseIdentifier: reuseIdentifier)
     }
     
     override func didReceiveMemoryWarning() {
@@ -95,19 +97,26 @@ extension ViewController: UITableViewDelegate {
     }
     
     func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
-        let reuseIdentifier = "cell"
-        var cell: UITableViewCell? = tableView.dequeueReusableCellWithIdentifier(reuseIdentifier)
-        if (cell != nil) {
-            cell = UITableViewCell(style: UITableViewCellStyle.Subtitle, reuseIdentifier: reuseIdentifier)
+        var cell: Cell? = tableView.dequeueReusableCellWithIdentifier(reuseIdentifier) as? Cell
+        if (cell == nil) {
+            cell = UITableViewCell(style: UITableViewCellStyle.Default, reuseIdentifier: reuseIdentifier) as? Cell
         }
         
         guard let gnomes = gnomes else {
-            cell?.textLabel?.text = "Downloading data..."
+            cell?.name.text = "Downloading data..."
             return cell!
         }
         
-        cell?.textLabel?.text = gnomes[indexPath.row].name
+        let name = gnomes[indexPath.row].name
+        cell?.name.text = name
+        cell?.avatar.image = nil
         cell?.accessoryType = .DisclosureIndicator
+        
+        ImageHelper.sharedInstance.imageForUrl(gnomes[indexPath.row].thumbnail, completionHandler:{(image: UIImage?, url: String) in
+            if let image = image {
+                cell?.setupCellAvatar(image)
+            }
+        })
         
         return cell!
     }
