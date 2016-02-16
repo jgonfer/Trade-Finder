@@ -14,6 +14,9 @@ class ViewController: UIViewController {
     var data = NSMutableData()
     var gnomes: [Gnome]?
     
+    var gnomeAvatarDetail: String?
+    var gnomeNameDetail: String?
+    
     @IBOutlet weak var tableView: UITableView!
     
     override func viewDidLoad() {
@@ -78,6 +81,21 @@ class ViewController: UIViewController {
             }
         }
     }
+    
+    override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
+        guard let identifier = segue.identifier else {
+            return
+        }
+        switch identifier {
+        case "showDetails":
+            if let vd = segue.destinationViewController as? ViewControllerDetail{
+                vd.avatarImage = gnomeAvatarDetail
+                vd.nameString = gnomeNameDetail
+            }
+        default:
+            break
+        }
+    }
 }
 
 extension ViewController: UITableViewDelegate {
@@ -119,5 +137,18 @@ extension ViewController: UITableViewDelegate {
         })
         
         return cell!
+    }
+    
+    func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
+        guard let gnomes = gnomes else {
+            return
+        }
+        
+        gnomeNameDetail = gnomes[indexPath.row].name
+        gnomeAvatarDetail = gnomes[indexPath.row].thumbnail
+        
+        tableView.deselectRowAtIndexPath(indexPath, animated: true)
+        
+        performSegueWithIdentifier("showDetails", sender: tableView)
     }
 }
