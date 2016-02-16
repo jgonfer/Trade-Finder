@@ -13,9 +13,11 @@ class ViewController: UIViewController {
     
     var data = NSMutableData()
     var gnomes: [Gnome]?
+    var gnomesFiltered: [Gnome]?
+    var professions: [String]?
+    var professionFilter = ""
     
-    var gnomeAvatarDetail: String?
-    var gnomeNameDetail: String?
+    var indexSelected: NSIndexPath?
     
     @IBOutlet weak var tableView: UITableView!
     
@@ -65,6 +67,18 @@ class ViewController: UIViewController {
                             let friends = item["friends"] as? Array<String>
                             let gnome = Gnome(id: id, name: name, thumbnail: thumbnail, age: age, weight: weight, height: height, hair_color: hair_color, professions: professions, friends: friends)
                             
+                            if let professions = professions {
+                                for profession in professions {
+                                    guard let _ = self.professions else {
+                                        self.professions = [profession]
+                                        continue
+                                    }
+                                    if !self.professions!.contains(profession) {
+                                        self.professions!.append(profession)
+                                    }
+                                }
+                            }
+                            
                             guard let _ = self.gnomes else {
                                 self.gnomes = [gnome]
                                 continue
@@ -72,6 +86,7 @@ class ViewController: UIViewController {
                             self.gnomes?.append(gnome)
                         }
                         dispatch_async(dispatch_get_main_queue(), { () -> Void in
+                            self.gnomesFiltered = self.gnomes
                             self.tableView.reloadData()
                         })
                     }
@@ -89,12 +104,26 @@ class ViewController: UIViewController {
         switch identifier {
         case "showDetails":
             if let vd = segue.destinationViewController as? ViewControllerDetail{
-                vd.avatarImage = gnomeAvatarDetail
-                vd.nameString = gnomeNameDetail
+                guard let indexSelected = indexSelected else {
+                    return
+                }
+                guard let gnomes = gnomesFiltered else {
+                    return
+                }
+                vd.gnome = gnomes[indexSelected.row]
+            }
+        case "filterGnomes":
+            if let fv = segue.destinationViewController as? FilterViewController{
+                fv.professions = professions
+                fv.delegate = self
             }
         default:
             break
         }
+    }
+    
+    @IBAction func filterProfessions(sender: UIButton) {
+        performSegueWithIdentifier("filterGnomes", sender: sender)
     }
 }
 
@@ -108,7 +137,7 @@ extension ViewController: UITableViewDelegate {
     }
     
     func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        guard let gnomes = gnomes else {
+        guard let gnomes = gnomesFiltered else {
             return 1
         }
         return gnomes.count
@@ -120,7 +149,7 @@ extension ViewController: UITableViewDelegate {
             cell = UITableViewCell(style: UITableViewCellStyle.Default, reuseIdentifier: reuseIdentifier) as? Cell
         }
         
-        guard let gnomes = gnomes else {
+        guard let gnomes = gnomesFiltered else {
             cell?.name.text = "Downloading data..."
             return cell!
         }
@@ -140,15 +169,47 @@ extension ViewController: UITableViewDelegate {
     }
     
     func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
-        guard let gnomes = gnomes else {
-            return
-        }
-        
-        gnomeNameDetail = gnomes[indexPath.row].name
-        gnomeAvatarDetail = gnomes[indexPath.row].thumbnail
+        indexSelected = indexPath
         
         tableView.deselectRowAtIndexPath(indexPath, animated: true)
         
         performSegueWithIdentifier("showDetails", sender: tableView)
+    }
+}
+
+extension ViewController: FilterViewControllerDelegate {
+    func professionSelected(profession: String) {
+        guard professionFilter != profession else {
+            return
+        }
+        professionFilter = profession
+        
+        guard !profession.isEmpty else {
+            gnomesFiltered = gnomes
+            self.tableView.reloadData()
+            return
+        }
+        
+        guard let gnomes = gnomes else {
+            self.tableView.reloadData()
+            return
+        }
+        
+        gnomesFiltered = []
+        dispatch_async(Constants.GlobalUserInitiatedQueue) { () -> Void in
+            for gnome in gnomes {
+                guard let professions = gnome.professions else {
+                    continue
+                }
+                if professions.contains(profession) {
+                    self.gnomesFiltered?.append(gnome)
+                    continue
+                }
+            }
+            
+            dispatch_async(dispatch_get_main_queue(), { () -> Void in
+                self.tableView.reloadData()
+            })
+        }
     }
 }
