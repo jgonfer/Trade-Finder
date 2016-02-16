@@ -42,7 +42,7 @@ class ViewController: UIViewController {
     }
     
     func connectionDidFinishLoading(connection: NSURLConnection!) {
-        dispatch_async(dispatch_get_global_queue(QOS_CLASS_USER_INITIATED, 0)) { () -> Void in
+        dispatch_async(Constants.GlobalUserInitiatedQueue) { () -> Void in
             do {
                 if let city = try NSJSONSerialization.JSONObjectWithData(self.data, options: NSJSONReadingOptions.MutableContainers) as? NSDictionary {
                     if let json = city["Brastlewark"] as? Array<NSDictionary> {
