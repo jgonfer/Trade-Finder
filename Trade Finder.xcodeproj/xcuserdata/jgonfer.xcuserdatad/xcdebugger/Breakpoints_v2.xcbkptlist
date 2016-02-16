@@ -10,12 +10,12 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Trade Finder/ViewController.swift"
-            timestampString = "477350264.076497"
+            timestampString = "477356604.094635"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "46"
-            endingLineNumber = "46"
-            landmarkName = "connection(_:didReceiveData:)"
+            startingLineNumber = "198"
+            endingLineNumber = "198"
+            landmarkName = "professionSelected(_:)"
             landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>
@@ -26,28 +26,12 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Trade Finder/ViewController.swift"
-            timestampString = "477350264.076497"
+            timestampString = "477356604.094635"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "63"
-            endingLineNumber = "63"
-            landmarkName = "connectionDidFinishLoading(_:)"
-            landmarkType = "5">
-         </BreakpointContent>
-      </BreakpointProxy>
-      <BreakpointProxy
-         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
-         <BreakpointContent
-            shouldBeEnabled = "Yes"
-            ignoreCount = "0"
-            continueAfterRunningActions = "No"
-            filePath = "Trade Finder/ViewController.swift"
-            timestampString = "477350264.076497"
-            startingColumnNumber = "9223372036854775807"
-            endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "69"
-            endingLineNumber = "69"
-            landmarkName = "connectionDidFinishLoading(_:)"
+            startingLineNumber = "204"
+            endingLineNumber = "204"
+            landmarkName = "professionSelected(_:)"
             landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>

@@ -32,6 +32,8 @@ class ViewControllerDetail: UIViewController {
             return
         }
         
+        navigationController?.navigationBar.tintColor = UIColor.blackColor()
+        
         tableView.registerClass(UITableViewCell.classForCoder(), forCellReuseIdentifier: reuseIdentifier)
         tableViewFriends.registerClass(UITableViewCell.classForCoder(), forCellReuseIdentifier: reuseIdentifier)
         
