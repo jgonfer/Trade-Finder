@@ -9,8 +9,13 @@
 import UIKit
 
 class ViewController: UIViewController {
+    let reuseIdentifier = "Cell"
+    
     var data = NSMutableData()
     var gnomes: [Gnome]?
+    
+    var gnomeAvatarDetail: String?
+    var gnomeNameDetail: String?
     
     @IBOutlet weak var tableView: UITableView!
     
@@ -22,7 +27,7 @@ class ViewController: UIViewController {
     }
     
     private func setupController() {
-        tableView.registerClass(UITableViewCell.classForCoder(), forCellReuseIdentifier: "cell")
+        tableView.registerNib(UINib(nibName: reuseIdentifier, bundle: nil), forCellReuseIdentifier: reuseIdentifier)
     }
     
     override func didReceiveMemoryWarning() {
@@ -42,7 +47,7 @@ class ViewController: UIViewController {
     }
     
     func connectionDidFinishLoading(connection: NSURLConnection!) {
-        dispatch_async(dispatch_get_global_queue(QOS_CLASS_USER_INITIATED, 0)) { () -> Void in
+        dispatch_async(Constants.GlobalUserInitiatedQueue) { () -> Void in
             do {
                 if let city = try NSJSONSerialization.JSONObjectWithData(self.data, options: NSJSONReadingOptions.MutableContainers) as? NSDictionary {
                     if let json = city["Brastlewark"] as? Array<NSDictionary> {
@@ -76,6 +81,21 @@ class ViewController: UIViewController {
             }
         }
     }
+    
+    override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
+        guard let identifier = segue.identifier else {
+            return
+        }
+        switch identifier {
+        case "showDetails":
+            if let vd = segue.destinationViewController as? ViewControllerDetail{
+                vd.avatarImage = gnomeAvatarDetail
+                vd.nameString = gnomeNameDetail
+            }
+        default:
+            break
+        }
+    }
 }
 
 extension ViewController: UITableViewDelegate {
@@ -95,20 +115,40 @@ extension ViewController: UITableViewDelegate {
     }
     
     func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
-        let reuseIdentifier = "cell"
-        var cell: UITableViewCell? = tableView.dequeueReusableCellWithIdentifier(reuseIdentifier)
-        if (cell != nil) {
-            cell = UITableViewCell(style: UITableViewCellStyle.Subtitle, reuseIdentifier: reuseIdentifier)
+        var cell: Cell? = tableView.dequeueReusableCellWithIdentifier(reuseIdentifier) as? Cell
+        if (cell == nil) {
+            cell = UITableViewCell(style: UITableViewCellStyle.Default, reuseIdentifier: reuseIdentifier) as? Cell
         }
         
         guard let gnomes = gnomes else {
-            cell?.textLabel?.text = "Downloading data..."
+            cell?.name.text = "Downloading data..."
             return cell!
         }
         
-        cell?.textLabel?.text = gnomes[indexPath.row].name
+        let name = gnomes[indexPath.row].name
+        cell?.name.text = name
+        cell?.avatar.image = nil
         cell?.accessoryType = .DisclosureIndicator
         
+        ImageHelper.sharedInstance.imageForUrl(gnomes[indexPath.row].thumbnail, completionHandler:{(image: UIImage?, url: String) in
+            if let image = image {
+                cell?.setupCellAvatar(image)
+            }
+        })
+        
         return cell!
+    }
+    
+    func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
+        guard let gnomes = gnomes else {
+            return
+        }
+        
+        gnomeNameDetail = gnomes[indexPath.row].name
+        gnomeAvatarDetail = gnomes[indexPath.row].thumbnail
+        
+        tableView.deselectRowAtIndexPath(indexPath, animated: true)
+        
+        performSegueWithIdentifier("showDetails", sender: tableView)
     }
 }

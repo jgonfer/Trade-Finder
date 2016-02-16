@@ -1,8 +1,9 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="9532" systemVersion="14F1603" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" initialViewController="LW4-6D-8dV">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="9532" systemVersion="15A279b" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" initialViewController="LW4-6D-8dV">
     <dependencies>
         <deployment identifier="iOS"/>
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="9530"/>
+        <capability name="Aspect ratio constraints" minToolsVersion="5.1"/>
     </dependencies>
     <scenes>
         <!--View Controller-->
@@ -37,11 +38,60 @@
                     <navigationItem key="navigationItem" id="Jw1-5W-6Ha"/>
                     <connections>
                         <outlet property="tableView" destination="fub-6y-Wxi" id="oUh-Ru-7lQ"/>
+                        <segue destination="2nO-cc-eaV" kind="show" identifier="showDetails" id="msW-Jy-WNm"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="dkx-z0-nzr" sceneMemberID="firstResponder"/>
             </objects>
             <point key="canvasLocation" x="1364" y="477"/>
+        </scene>
+        <!--View Controller Detail-->
+        <scene sceneID="rUb-kF-xBj">
+            <objects>
+                <viewController id="2nO-cc-eaV" customClass="ViewControllerDetail" customModule="Trade_Finder" customModuleProvider="target" sceneMemberID="viewController">
+                    <layoutGuides>
+                        <viewControllerLayoutGuide type="top" id="P40-lh-3ew"/>
+                        <viewControllerLayoutGuide type="bottom" id="yjd-nk-MQs"/>
+                    </layoutGuides>
+                    <view key="view" contentMode="scaleToFill" id="Lvd-6g-t7E">
+                        <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="htG-WX-cX4">
+                                <rect key="frame" x="180" y="98" width="240" height="240"/>
+                                <constraints>
+                                    <constraint firstAttribute="width" secondItem="htG-WX-cX4" secondAttribute="height" multiplier="1:1" id="vrR-Ms-MUy"/>
+                                </constraints>
+                            </imageView>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="center" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="rJu-8c-x36">
+                                <rect key="frame" x="180" y="346" width="240" height="70"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="70" id="Ck3-qm-9ga"/>
+                                </constraints>
+                                <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
+                                <nil key="highlightedColor"/>
+                            </label>
+                        </subviews>
+                        <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                        <constraints>
+                            <constraint firstItem="rJu-8c-x36" firstAttribute="centerX" secondItem="htG-WX-cX4" secondAttribute="centerX" id="24l-pb-4OR"/>
+                            <constraint firstItem="htG-WX-cX4" firstAttribute="top" secondItem="P40-lh-3ew" secondAttribute="bottom" constant="34" id="DjE-IZ-vML"/>
+                            <constraint firstItem="rJu-8c-x36" firstAttribute="top" secondItem="htG-WX-cX4" secondAttribute="bottom" constant="8" id="LEC-7j-Ib8"/>
+                            <constraint firstItem="rJu-8c-x36" firstAttribute="leading" secondItem="htG-WX-cX4" secondAttribute="leading" id="PBV-lv-pAf"/>
+                            <constraint firstItem="htG-WX-cX4" firstAttribute="centerX" secondItem="Lvd-6g-t7E" secondAttribute="centerX" id="QvG-64-FN8"/>
+                            <constraint firstItem="rJu-8c-x36" firstAttribute="trailing" secondItem="htG-WX-cX4" secondAttribute="trailing" id="WMp-h2-u5t"/>
+                            <constraint firstItem="htG-WX-cX4" firstAttribute="width" secondItem="Lvd-6g-t7E" secondAttribute="height" multiplier="2:5" id="d5Y-HP-eu9"/>
+                        </constraints>
+                    </view>
+                    <connections>
+                        <outlet property="avatar" destination="htG-WX-cX4" id="0tX-rf-edA"/>
+                        <outlet property="name" destination="rJu-8c-x36" id="3bA-Qw-g7a"/>
+                    </connections>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="D1h-YO-S6V" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="2115" y="477"/>
         </scene>
         <!--Navigation Controller-->
         <scene sceneID="0J2-ea-0Cm">
