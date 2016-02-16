@@ -14,8 +14,7 @@ class ViewController: UIViewController {
     var data = NSMutableData()
     var gnomes: [Gnome]?
     
-    var gnomeAvatarDetail: String?
-    var gnomeNameDetail: String?
+    var indexSelected: NSIndexPath?
     
     @IBOutlet weak var tableView: UITableView!
     
@@ -89,8 +88,13 @@ class ViewController: UIViewController {
         switch identifier {
         case "showDetails":
             if let vd = segue.destinationViewController as? ViewControllerDetail{
-                vd.avatarImage = gnomeAvatarDetail
-                vd.nameString = gnomeNameDetail
+                guard let indexSelected = indexSelected else {
+                    return
+                }
+                guard let gnomes = gnomes else {
+                    return
+                }
+                vd.gnome = gnomes[indexSelected.row]
             }
         default:
             break
@@ -140,12 +144,7 @@ extension ViewController: UITableViewDelegate {
     }
     
     func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
-        guard let gnomes = gnomes else {
-            return
-        }
-        
-        gnomeNameDetail = gnomes[indexPath.row].name
-        gnomeAvatarDetail = gnomes[indexPath.row].thumbnail
+        indexSelected = indexPath
         
         tableView.deselectRowAtIndexPath(indexPath, animated: true)
         
